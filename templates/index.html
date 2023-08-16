@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face Recognition</title>
+</head>
+<body>
+    <h1>Face Recognition</h1>
+    
+    <h2>Upload your images</h2>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" multiple>
+        <input type="submit" value="Upload and Train">
+    </form>
+
+    <h2>Live Video Stream</h2>
+    <img src="{{ url_for('video_feed') }}" alt="Video Feed">
+
+    <h3>Recognized Face:</h3>
+    <div id="recognized_name">Waiting for a face...</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script type="text/javascript">
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        
+        socket.on('connect', function() {
+            console.log('Connected to server');
+        });
+
+        socket.on('face_detected', function(data) {
+            var recognizedDiv = document.getElementById("recognized_name");
+            recognizedDiv.textContent = data.name || "Unknown";
+        });
+    </script>
+</body>
+</html>
